@@ -138,13 +138,13 @@ const Navbar = () => {
 
   return (
     <nav className='flex items-center justify-between py-2 px-4 bg-white/80 backdrop-blur-sm border-b border-gray-100 shadow-sm'>
-      <div className="flex gap-3 items-center">
+      <div className="flex gap-1 items-center">
         <Link href={'/'} className="hover:opacity-80 transition-opacity">
           <Image 
             src="/logo.svg" 
             alt='logo'
-            width={33}
-            height={33}
+            width={30}
+            height={30}
             className="hover:scale-105 transition-transform"
           />
         </Link>
