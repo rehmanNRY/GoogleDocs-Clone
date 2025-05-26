@@ -16,7 +16,7 @@ const page = async ({params}: DocumentIdPageProps) => {
         <Navbar />
         <Toolbar />
       </div>
-      <div className='pt-[145px] print:pt-0'>
+      <div className='pt-[155px] print:pt-0'>
         <Editor />
       </div>
     </div>

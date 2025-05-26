@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react'
 import { FaCaretDown } from 'react-icons/fa'
+import { cn } from '@/lib/utils'
 
 interface MarkerProps {
   postion: number;
@@ -18,22 +19,30 @@ const Marker = ({
 }: MarkerProps) => {
   return (
     <div
-      className={`absolute top-0 w-4 cursor-ew-resize z-[5] group h-full -ml-2`}
+      className={cn(
+        "absolute top-0 w-4 cursor-ew-resize z-[5] group h-full -ml-2 transition-transform duration-200",
+        isDragging && "scale-110"
+      )}
       style={{ [isLeft ? 'left' : 'right']: `${postion}px` }}
       onMouseDown={onMouseDown}
       onDoubleClick={onDoubleClick}
     >
-      <FaCaretDown className="absolute left-1/2 top-0 h-full fill-blue-500 transform -translate-x-1/2" />
+      <FaCaretDown className="absolute left-1/2 top-0 h-full fill-blue-600 transform -translate-x-1/2 transition-colors duration-200 group-hover:fill-blue-700" />
       <div
-        className='absolute left-1/2 top-4 transform translate-x-1/2'
+        className={cn(
+          'absolute left-1/2 top-4 transform translate-x-1/2 transition-opacity duration-200',
+          isDragging ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+        )}
         style={{
           height: "100vh",
           width: "1px",
           transform: 'scaleX(0.5)',
           backgroundColor: '#3b72f6',
-          display: isDragging ? 'block' : 'none',
         }}
       />
+      <div className="absolute left-1/2 top-4 transform -translate-x-1/2 bg-blue-600 text-white text-xs px-1.5 py-0.5 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none">
+        {postion}px
+      </div>
     </div>
   )
 }
@@ -98,7 +107,7 @@ const Ruler = () => {
       onMouseMove={handleMouseMove}
       onMouseUp={handleMouseUp}
       onMouseLeave={handleMouseUp}
-      className='w-[816px] mx-auto h-6 border-b border-gray-300 flex items-end relative select-none print:hidden'>
+      className='w-[816px] mx-auto h-8 border-b border-gray-200 flex items-end relative select-none print:hidden bg-white/80 backdrop-blur-sm'>
       <div
         id="ruler-container"
         className='w-full h-full relative'
@@ -129,15 +138,15 @@ const Ruler = () => {
                 >
                   {marker % 10 === 0 && (
                     <>
-                      <div className='absolute bottom-0 w-[1px] h-2 bg-neutral-500'></div>
-                      <span className="absolute bottom-2 text-[10px] text-neutral-500 -left-[3px]">{marker / 10 + 1}</span>
+                      <div className='absolute bottom-0 w-[1px] h-3 bg-neutral-400'></div>
+                      <span className="absolute bottom-2 text-[10px] text-neutral-500 font-medium -left-[3px]">{marker / 10 + 1}</span>
                     </>
                   )}
                   {marker % 5 === 0 && marker % 10 !== 0 && (
-                    <div className="absolute bottom-0 w-[1px] h-1.5 bg-neutral-500"></div>
+                    <div className="absolute bottom-0 w-[1px] h-2 bg-neutral-400"></div>
                   )}
                   {marker % 5 !== 0 && (
-                    <div className="absolute bottom-0 w-[1px] h-1 bg-neutral-500"></div>
+                    <div className="absolute bottom-0 w-[1px] h-1 bg-neutral-300"></div>
                   )}
                 </div>
               )

@@ -1,5 +1,5 @@
-import Link from "next/link";
 import Navbar from "./navbar";
+import TemplatesGallery from "./templates-gallery";
 
 export default function Home() {
   return (
@@ -8,8 +8,7 @@ export default function Home() {
         <Navbar />
       </div>
       <div className="mt-16">
-        <p>Hello world</p>
-        <Link href={"documents/123"} >Document id page</Link>
+        <TemplatesGallery />
       </div>
     </div>
   );
