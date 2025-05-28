@@ -3,6 +3,7 @@ import { useQuery } from "convex/react";
 import Navbar from "./navbar";
 import TemplatesGallery from "./templates-gallery";
 import { api } from "../../../convex/_generated/api";
+import Link from "next/link";
 
 export default function Home() {
   const documents = useQuery(api.documents.get);
@@ -16,6 +17,7 @@ export default function Home() {
         {documents?.map((doc)=> (
           <span key={doc._id}>{doc.title}</span>
         ))}
+        <p className="text-center pt-8"><Link href={"/documents/new"} className="text-blue-600">Click here</Link> to go to documents page</p>
       </div>
     </div>
   );
