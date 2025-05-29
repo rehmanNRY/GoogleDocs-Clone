@@ -2,11 +2,31 @@
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel'
 import { templates } from '@/constants/templates'
 import { cn } from '@/lib/utils'
-import React from 'react'
+import React, { useState } from 'react'
 import { Plus, FileText } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useMutation } from 'convex/react'
+import { api } from '../../../convex/_generated/api'
 
 const TemplatesGallery = () => {
-  const isCreating = false
+  const router = useRouter();
+  const create = useMutation(api.documents.create)
+
+  const [isCreating, setIsCreating] = useState(false)
+
+  const onTemplateClick = (title: string, initialContent: string) => {
+    setIsCreating(true);
+    create({ title, initialContent })
+      .then((documentId) => {
+        router.push(`/documents/${documentId}`);
+      })
+      .catch((error) => {
+        console.error("Error creating document:", error);
+      })
+      .finally(() => {
+        setIsCreating(false);
+      });
+  }
 
   return (
     <div className='bg-white/80 backdrop-blur-sm border-b border-gray-100'>
@@ -38,7 +58,7 @@ const TemplatesGallery = () => {
                 )}>
                   <button
                     disabled={isCreating}
-                    onClick={() => {}}
+                    onClick={() => onTemplateClick(template.label, "")}
                     style={{ backgroundImage: `url(${template.imageUrl})` }}
                     className={cn(
                       'relative bg-cover bg-center bg-no-repeat size-full rounded-lg border border-gray-200',
