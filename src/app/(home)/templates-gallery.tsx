@@ -7,6 +7,7 @@ import { Plus, FileText } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useMutation } from 'convex/react'
 import { api } from '../../../convex/_generated/api'
+import { toast } from 'sonner'
 
 const TemplatesGallery = () => {
   const router = useRouter();
@@ -18,9 +19,11 @@ const TemplatesGallery = () => {
     setIsCreating(true);
     create({ title, initialContent })
       .then((documentId) => {
+        toast.success("Document created successfully.");
         router.push(`/documents/${documentId}`);
       })
       .catch((error) => {
+        toast.error("Error creating document.");
         console.error("Error creating document:", error);
       })
       .finally(() => {

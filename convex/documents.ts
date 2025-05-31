@@ -14,9 +14,12 @@ export const create = mutation({
       throw new ConvexError("User not authenticated");
     }
 
+    const organizationId = (user.organization_id ?? undefined) as string | undefined;
+
     return ctx.db.insert("documents", {
-      title: args.title || "Untitled Document",
+      title: args.title ?? "Untitled Document",
       ownerId: user.subject,
+      organizationId,
       initialContent: args.initialContent || "",
     });
   },
@@ -31,11 +34,30 @@ export const get = query({
       throw new ConvexError("User not authenticated");
     }
 
+    const organizationId = (user.organization_id ?? undefined) as string | undefined;
+
+    if (search && organizationId) {
+      return await ctx.db
+        .query("documents")
+        .withSearchIndex("search_title", (q) =>
+          q.search("title", search)
+            .eq("ownerId", user.subject)
+            .eq("organizationId", organizationId))
+        .paginate(paginationOpts);
+    }
+
     if (search) {
       return await ctx.db
         .query("documents")
         .withSearchIndex("search_title", (q) =>
           q.search("title", search).eq("ownerId", user.subject))
+        .paginate(paginationOpts);
+    }
+
+    if (organizationId) {
+      return await ctx.db
+        .query("documents")
+        .withIndex("by_organization_id", (q) => q.eq("organizationId", organizationId))
         .paginate(paginationOpts);
     }
 
@@ -62,7 +84,9 @@ export const removeById = mutation({
       throw new ConvexError("Document not found");
     }
 
-    if (document.ownerId !== user.subject) {
+    const organizationId = (user.organization_id ?? undefined) as string | undefined;
+
+    if (document.ownerId !== user.subject && document.organizationId !== organizationId) {
       throw new ConvexError("You do not have permission to delete this document");
     }
 
@@ -86,8 +110,10 @@ export const updateById = mutation({
       throw new ConvexError("Document not found");
     }
 
-    if (document.ownerId !== user.subject) {
-      throw new ConvexError("You do not have permission to delete this document");
+    const organizationId = (user.organization_id ?? undefined) as string | undefined;
+
+    if (document.ownerId !== user.subject && document.organizationId !== organizationId) {
+      throw new ConvexError("You do not have permission to update this document");
     }
 
     return await ctx.db.patch(args.id, { title: args.title });

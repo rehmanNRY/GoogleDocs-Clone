@@ -2,7 +2,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import SearchInput from './search-input'
-import { UserButton } from '@clerk/clerk-react';
+import { UserButton, OrganizationSwitcher } from '@clerk/clerk-react';
 
 const Navbar = () => {
   return (
@@ -20,7 +20,15 @@ const Navbar = () => {
         <h3>Docs</h3>
       </div>
       <SearchInput />
-      <UserButton />
+      <div className="flex gap-3 items-center">
+        <OrganizationSwitcher
+          afterCreateOrganizationUrl={"/"}
+          afterLeaveOrganizationUrl='/'
+          afterSelectOrganizationUrl={'/'}
+          afterSelectPersonalUrl={'/'}
+        />
+        <UserButton />
+      </div>
     </nav>
   )
 }

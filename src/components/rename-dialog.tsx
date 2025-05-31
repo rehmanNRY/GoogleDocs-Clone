@@ -13,6 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
+import { toast } from 'sonner';
 
 interface RenameDialogProps {
   documentId: Id<"documents">;
@@ -32,11 +33,14 @@ const RenameDialog = ({ documentId, initialTitle, children }: RenameDialogProps)
 
     setIsRenaming(true);
     update({ id: documentId, title: newTitle.trim() || "Untitled" })
-      .then(()=> setOpen(false))
+      .then(() => {
+        toast.success("Document renamed successfully.");
+      })
+      .catch(() => toast.error("Something went wrong."))
       .finally(() => {
         setIsRenaming(false)
-      }
-    );
+        setOpen(false)
+      });
   };
 
   return (

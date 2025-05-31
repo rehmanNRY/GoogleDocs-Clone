@@ -4,10 +4,10 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import DocumentInput from './document-input'
-import { 
-  FaFile, 
-  FaEdit, 
-  FaPlus, 
+import {
+  FaFile,
+  FaEdit,
+  FaPlus,
   FaFont,
   FaSave,
   FaFileAlt,
@@ -45,6 +45,7 @@ import {
 
 import { useEditorStore } from '@/store/use-editor-store';
 import { cn } from '@/lib/utils';
+import { OrganizationSwitcher, UserButton } from '@clerk/nextjs'
 
 const Navbar = () => {
   const { editor } = useEditorStore();
@@ -140,8 +141,8 @@ const Navbar = () => {
     <nav className='flex items-center justify-between py-2 px-4 bg-white/80 backdrop-blur-sm border-b border-gray-100 shadow-sm'>
       <div className="flex gap-1 items-center">
         <Link href={'/'} className="hover:opacity-80 transition-opacity">
-          <Image 
-            src="/logo.svg" 
+          <Image
+            src="/logo.svg"
             alt='logo'
             width={30}
             height={30}
@@ -162,25 +163,25 @@ const Navbar = () => {
                       <FaSave className="text-blue-600" /> Save
                     </MenubarSubTrigger>
                     <MenubarSubContent className="min-w-[200px] p-2 rounded-lg shadow-lg border border-gray-100 print:hidden">
-                      <MenubarItem 
+                      <MenubarItem
                         className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                         onClick={handleSave}>
                         Save
                         <MenubarShortcut>⌘S</MenubarShortcut>
                       </MenubarItem>
-                      <MenubarItem 
+                      <MenubarItem
                         className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                         onClick={() => handleSaveAs('html')}>
                         Save as HTML
                         <MenubarShortcut>⌘⇧H</MenubarShortcut>
                       </MenubarItem>
-                      <MenubarItem 
+                      <MenubarItem
                         className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                         onClick={() => handleSaveAs('json')}>
                         Save as JSON
                         <MenubarShortcut>⌘⇧J</MenubarShortcut>
                       </MenubarItem>
-                      <MenubarItem 
+                      <MenubarItem
                         className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                         onClick={() => handleSaveAs('text')}>
                         Save as Text
@@ -189,7 +190,7 @@ const Navbar = () => {
                     </MenubarSubContent>
                   </MenubarSub>
                   <MenubarSeparator className="my-1" />
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={handleNewDocument}>
                     <div className="flex items-center gap-2">
@@ -197,7 +198,7 @@ const Navbar = () => {
                     </div>
                     <MenubarShortcut>⌘N</MenubarShortcut>
                   </MenubarItem>
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={handleRename}>
                     <div className="flex items-center gap-2">
@@ -206,7 +207,7 @@ const Navbar = () => {
                     <MenubarShortcut>⌘R</MenubarShortcut>
                   </MenubarItem>
                   <MenubarSeparator className="my-1" />
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors text-red-600"
                     onClick={handleRemove}>
                     <div className="flex items-center gap-2">
@@ -215,7 +216,7 @@ const Navbar = () => {
                     <MenubarShortcut>⌘⌫</MenubarShortcut>
                   </MenubarItem>
                   <MenubarSeparator className="my-1" />
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => window.print()}>
                     <div className="flex items-center gap-2">
@@ -231,7 +232,7 @@ const Navbar = () => {
                   <FaEdit className="text-blue-600" /> Edit
                 </MenubarTrigger>
                 <MenubarContent className="min-w-[220px] p-2 rounded-lg shadow-lg border border-gray-100">
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => editor?.chain().focus().undo().run()}>
                     <div className="flex items-center gap-2">
@@ -239,7 +240,7 @@ const Navbar = () => {
                     </div>
                     <MenubarShortcut>⌘Z</MenubarShortcut>
                   </MenubarItem>
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => editor?.chain().focus().redo().run()}>
                     <div className="flex items-center gap-2">
@@ -248,7 +249,7 @@ const Navbar = () => {
                     <MenubarShortcut>⌘⇧Z</MenubarShortcut>
                   </MenubarItem>
                   <MenubarSeparator className="my-1" />
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => document.execCommand('cut')}>
                     <div className="flex items-center gap-2">
@@ -256,7 +257,7 @@ const Navbar = () => {
                     </div>
                     <MenubarShortcut>⌘X</MenubarShortcut>
                   </MenubarItem>
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => document.execCommand('copy')}>
                     <div className="flex items-center gap-2">
@@ -264,7 +265,7 @@ const Navbar = () => {
                     </div>
                     <MenubarShortcut>⌘C</MenubarShortcut>
                   </MenubarItem>
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => document.execCommand('paste')}>
                     <div className="flex items-center gap-2">
@@ -279,7 +280,7 @@ const Navbar = () => {
                   <FaPlus className="text-blue-600" /> Insert
                 </MenubarTrigger>
                 <MenubarContent className="min-w-[220px] p-2 rounded-lg shadow-lg border border-gray-100">
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => {
                       const input = document.createElement('input');
@@ -314,7 +315,7 @@ const Navbar = () => {
                       ))}
                     </MenubarSubContent>
                   </MenubarSub>
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => {
                       const url = window.prompt('Enter URL');
@@ -334,7 +335,7 @@ const Navbar = () => {
                   <FaFont className="text-blue-600" /> Format
                 </MenubarTrigger>
                 <MenubarContent className="min-w-[220px] p-2 rounded-lg shadow-lg border border-gray-100">
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => editor?.chain().focus().toggleBold().run()}>
                     <div className="flex items-center gap-2">
@@ -342,7 +343,7 @@ const Navbar = () => {
                     </div>
                     <MenubarShortcut>⌘B</MenubarShortcut>
                   </MenubarItem>
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => editor?.chain().focus().toggleItalic().run()}>
                     <div className="flex items-center gap-2">
@@ -350,7 +351,7 @@ const Navbar = () => {
                     </div>
                     <MenubarShortcut>⌘I</MenubarShortcut>
                   </MenubarItem>
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => editor?.chain().focus().toggleUnderline().run()}>
                     <div className="flex items-center gap-2">
@@ -381,21 +382,21 @@ const Navbar = () => {
                     </MenubarSubContent>
                   </MenubarSub>
                   <MenubarSeparator className="my-1" />
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => editor?.chain().focus().setTextAlign('left').run()}>
                     <div className="flex items-center gap-2">
                       <FaAlignLeft className="text-blue-600" /> Align left
                     </div>
                   </MenubarItem>
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => editor?.chain().focus().setTextAlign('center').run()}>
                     <div className="flex items-center gap-2">
                       <FaAlignCenter className="text-blue-600" /> Align center
                     </div>
                   </MenubarItem>
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => editor?.chain().focus().setTextAlign('right').run()}>
                     <div className="flex items-center gap-2">
@@ -403,7 +404,7 @@ const Navbar = () => {
                     </div>
                   </MenubarItem>
                   <MenubarSeparator className="my-1" />
-                  <MenubarItem 
+                  <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
                     onClick={() => editor?.chain().focus().unsetAllMarks().run()}>
                     <div className="flex items-center gap-2">
@@ -415,6 +416,15 @@ const Navbar = () => {
             </Menubar>
           </div>
         </div>
+      </div>
+      <div className="flex gap-3 items-center">
+        <OrganizationSwitcher
+          afterCreateOrganizationUrl={"/"}
+          afterLeaveOrganizationUrl='/'
+          afterSelectOrganizationUrl={'/'}
+          afterSelectPersonalUrl={'/'}
+        />
+        <UserButton />
       </div>
     </nav>
   )
