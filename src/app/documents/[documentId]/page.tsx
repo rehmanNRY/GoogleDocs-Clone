@@ -2,12 +2,13 @@ import React from 'react'
 import { Editor } from './editor';
 import Toolbar from './toolbar';
 import Navbar from './navbar';
+import { Room } from './room';
 
 interface DocumentIdPageProps {
   params: Promise<{ documentId: string; }>;
 }
 
-const page = async ({params}: DocumentIdPageProps) => {
+const page = async ({ params }: DocumentIdPageProps) => {
   const { documentId } = await params;
   console.log(documentId)
   return (
@@ -17,7 +18,9 @@ const page = async ({params}: DocumentIdPageProps) => {
         <Toolbar />
       </div>
       <div className='pt-[155px] print:pt-0'>
-        <Editor />
+        <Room>
+          <Editor />
+        </Room>
       </div>
     </div>
   )
