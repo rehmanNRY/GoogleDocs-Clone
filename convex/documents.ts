@@ -85,8 +85,9 @@ export const removeById = mutation({
     }
 
     const organizationId = (user.organization_id ?? undefined) as string | undefined;
+    const isOrganizationMember = !!(document.organizationId && document.organizationId === organizationId);
 
-    if (document.ownerId !== user.subject && document.organizationId !== organizationId) {
+    if (document.ownerId !== user.subject && !isOrganizationMember) {
       throw new ConvexError("You do not have permission to delete this document");
     }
 
@@ -112,10 +113,19 @@ export const updateById = mutation({
 
     const organizationId = (user.organization_id ?? undefined) as string | undefined;
 
-    if (document.ownerId !== user.subject && document.organizationId !== organizationId) {
+    const isOrganizationMember = !!(document.organizationId && document.organizationId === organizationId);
+
+    if (document.ownerId !== user.subject && !isOrganizationMember) {
       throw new ConvexError("You do not have permission to update this document");
     }
 
     return await ctx.db.patch(args.id, { title: args.title });
   },
+})
+
+export const getById = query({
+  args: { id: v.id("documents") },
+  handler: async (ctx, { id }) => {
+    return await ctx.db.get(id);
+  }
 })
