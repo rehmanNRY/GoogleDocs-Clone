@@ -23,7 +23,7 @@ const Navbar = () => {
       <div className="flex gap-3 items-center">
         <OrganizationSwitcher
           afterCreateOrganizationUrl={"/"}
-          afterLeaveOrganizationUrl='/'
+          afterLeaveOrganizationUrl={'/'}
           afterSelectOrganizationUrl={'/'}
           afterSelectPersonalUrl={'/'}
         />
