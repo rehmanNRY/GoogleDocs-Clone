@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import { FaCaretDown } from 'react-icons/fa'
 import { cn } from '@/lib/utils'
+import { useMutation, useStorage } from '@liveblocks/react';
 
 interface MarkerProps {
   postion: number;
@@ -48,8 +49,15 @@ const Marker = ({
 }
 
 const Ruler = () => {
-  const [leftMargin, setLeftMargin] = useState(56)
-  const [rightMargin, setRightMargin] = useState(56)
+  const leftMargin = useStorage((root) => root.leftMargin) ?? 56
+  const setLeftMargin = useMutation(({ storage }, position: number) => {
+    storage.set("leftMargin", position)
+  }, [])
+
+  const rightMargin = useStorage((root) => root.rightMargin) ?? 56
+  const setRightMargin = useMutation(({ storage }, position: number) => {
+    storage.set("rightMargin", position)
+  }, [])
 
   const [isDraggingLeft, setIsDraggingLeft] = useState(false)
   const [isDraggingRight, setIsDraggingRight] = useState(false)
@@ -77,12 +85,12 @@ const Ruler = () => {
       if (isDraggingLeft) {
         const maxLeftPostion = PAGE_WIDTH - rightMargin - MINIMUM_WIDTH;
         const newLeftPosition = Math.min(rawPosition, maxLeftPostion);
-        setLeftMargin(newLeftPosition); // TODO: Make collaborative
+        setLeftMargin(newLeftPosition);
       } else if (isDraggingRight) {
         const maxRightPosition = PAGE_WIDTH - leftMargin + MINIMUM_WIDTH;
         const newRightPosition = Math.max(816 - rawPosition, 0);
         const constrainedRightPosition = Math.min(newRightPosition, maxRightPosition);
-        setRightMargin(constrainedRightPosition); // TODO: Make collaborative
+        setRightMargin(constrainedRightPosition);
       }
     }
   }

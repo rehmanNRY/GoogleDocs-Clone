@@ -3,12 +3,14 @@
 import { ClientSideSuspense } from "@liveblocks/react";
 import { Separator } from "@/components/ui/separator";
 import { useOthers, useSelf } from "@liveblocks/react/suspense";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-const AVATAR_SIZE = 36
+const AVATAR_SIZE = 32;
+const AVATAR_SPACING = 8;
 
 export const Avatars = () => {
   return (
-    <ClientSideSuspense fallback={null} >
+    <ClientSideSuspense fallback={null}>
       <AvatarStack />
     </ClientSideSuspense>
   )
@@ -21,40 +23,68 @@ const AvatarStack = () => {
   if (users.length === 0) return null;
 
   return (
-    <>
+    <div className="flex items-center gap-2">
       <div className="flex items-center">
-        {currentUser && (
-          <div className="relative ml-2">
-            <Avatar src={currentUser.info.avatar} name="You" />
-          </div>
-        )}
         <div className="flex">
-          {users.map(({ connectionId, info }) => {
-            return (
-              <Avatar key={connectionId} src={info.avatar} name={info.name} />
-            )
-          })}
+          {currentUser && (
+            <Avatar
+              src={currentUser.info.avatar}
+              name="You"
+              isCurrentUser={true}
+            />
+          )}
+          {users.map(({ connectionId, info }) => (
+            <Avatar
+              key={connectionId}
+              src={info.avatar}
+              name={info.name}
+              isCurrentUser={false}
+            />
+          ))}
         </div>
       </div>
       <Separator orientation="vertical" className="h-6" />
-    </>
+    </div>
   )
 }
 
 interface AvatarProps {
   src: string;
   name: string;
-};
+  isCurrentUser: boolean;
+}
 
-const Avatar = ({ src, name }: AvatarProps) => {
+const Avatar = ({ src, name, isCurrentUser }: AvatarProps) => {
   return (
-    <div
-      style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
-      className="group -ml-2 flex shrink-0 place-content-center relative border-4 border-white rounded-full bg-gray-400">
-      <div className="opacity-0 group-hover:opacity-100 absolute top-full py-1 px-2 text-white text-xs rounded-lg mt-2.5 z-10 bg-black transition-opacity whitespace-nowrap">
-        {name}
-      </div>
-      <img src={src} alt={name} className="size-full" />
-    </div>
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div
+            style={{
+              width: AVATAR_SIZE,
+              height: AVATAR_SIZE,
+              marginLeft: isCurrentUser ? 0 : -AVATAR_SPACING
+            }}
+            className={`
+              relative flex shrink-0 place-content-center 
+              border-2 border-background rounded-full 
+              bg-muted/50 backdrop-blur-sm
+              transition-all duration-200 ease-in-out
+              hover:scale-110 hover:z-10
+              // ${isCurrentUser ? 'ring-2 ring-primary ring-offset-2' : ''}
+            `}
+          >
+            <img
+              src={src}
+              alt={name}
+              className="size-full rounded-full object-cover"
+            />
+          </div>
+        </TooltipTrigger>
+        <TooltipContent side="bottom" className="text-xs">
+          {name}
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }
