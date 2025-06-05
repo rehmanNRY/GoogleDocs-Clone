@@ -48,9 +48,23 @@ import { cn } from '@/lib/utils';
 import { OrganizationSwitcher, UserButton } from '@clerk/nextjs'
 import { Avatars } from './avatars'
 import { Inbox } from './inbox'
+import { Doc } from '../../../../convex/_generated/dataModel'
+import { useMutation } from 'convex/react'
+import { api } from '../../../../convex/_generated/api'
+import { useRouter } from 'next/navigation'
+import { toast } from 'sonner'
+import RenameDialog from '@/components/rename-dialog'
+import RemoveDialog from '@/components/remove-dialog'
 
-const Navbar = () => {
+interface NavbarProps {
+  data: Doc<"documents">
+}
+
+const Navbar = ({ data }: NavbarProps) => {
   const { editor } = useEditorStore();
+  const router = useRouter();
+
+  const mutation = useMutation(api.documents.create)
 
   const handleSave = () => {
     const content = editor?.getHTML();
@@ -58,7 +72,7 @@ const Navbar = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = 'document.html';
+    a.download = `${data.title}.html`;
     a.click();
     URL.revokeObjectURL(url);
   };
@@ -92,23 +106,21 @@ const Navbar = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `document.${extension}`;
+    a.download = `${data.title}.${extension}`;
     a.click();
     URL.revokeObjectURL(url);
   };
 
   const handleNewDocument = () => {
-    editor?.commands.setContent('');
-  };
-
-  const handleRename = () => {
-    // TODO: Implement rename functionality
-    console.log('Rename document');
-  };
-
-  const handleRemove = () => {
-    // TODO: Implement remove functionality
-    console.log('Remove document');
+    mutation({
+      title: "Untitled document",
+      initialContent: ""
+    })
+      .then((id) => {
+        toast.success("Document created")
+        router.push(`/documents/${id}`)
+      })
+      .catch(() => toast.error("Something went wrong"))
   };
 
   const tableSizes = [
@@ -152,7 +164,7 @@ const Navbar = () => {
           />
         </Link>
         <div className="flex flex-col">
-          <DocumentInput />
+          <DocumentInput title={data.title} id={data._id} />
           <div className="flex print:hidden">
             <Menubar className="rounded-lg border-none bg-transparent">
               <MenubarMenu>
@@ -200,23 +212,31 @@ const Navbar = () => {
                     </div>
                     <MenubarShortcut>⌘N</MenubarShortcut>
                   </MenubarItem>
-                  <MenubarItem
-                    className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
-                    onClick={handleRename}>
-                    <div className="flex items-center gap-2">
-                      <FaFileAlt className="text-blue-600" /> Rename
-                    </div>
-                    <MenubarShortcut>⌘R</MenubarShortcut>
-                  </MenubarItem>
+                  <RenameDialog documentId={data._id} initialTitle={data.title} >
+                    <MenubarItem
+                      className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"
+                      onClick={(e) => e.stopPropagation()}
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      <div className="flex items-center gap-2">
+                        <FaFileAlt className="text-blue-600" /> Rename
+                      </div>
+                      <MenubarShortcut>⌘R</MenubarShortcut>
+                    </MenubarItem>
+                  </RenameDialog>
                   <MenubarSeparator className="my-1" />
-                  <MenubarItem
-                    className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors text-red-600"
-                    onClick={handleRemove}>
-                    <div className="flex items-center gap-2">
-                      <FaTrash /> Remove
-                    </div>
-                    <MenubarShortcut>⌘⌫</MenubarShortcut>
-                  </MenubarItem>
+                  <RemoveDialog documentId={data._id}>
+                    <MenubarItem
+                      className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors text-red-600"
+                      onClick={(e) => e.stopPropagation()}
+                      onSelect={(e) => e.preventDefault()}
+                    >
+                      <div className="flex items-center gap-2">
+                        <FaTrash /> Remove
+                      </div>
+                      <MenubarShortcut>⌘⌫</MenubarShortcut>
+                    </MenubarItem>
+                  </RemoveDialog>
                   <MenubarSeparator className="my-1" />
                   <MenubarItem
                     className="flex items-center justify-between hover:bg-gray-100 rounded-md px-2 py-1.5 transition-colors"

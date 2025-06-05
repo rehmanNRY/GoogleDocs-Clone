@@ -71,7 +71,6 @@ const Avatar = ({ src, name, isCurrentUser }: AvatarProps) => {
               bg-muted/50 backdrop-blur-sm
               transition-all duration-200 ease-in-out
               hover:scale-110 hover:z-10
-              // ${isCurrentUser ? 'ring-2 ring-primary ring-offset-2' : ''}
             `}
           >
             <img
