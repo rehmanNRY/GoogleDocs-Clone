@@ -61,7 +61,7 @@ const TemplatesGallery = () => {
                 )}>
                   <button
                     disabled={isCreating}
-                    onClick={() => onTemplateClick(template.label, "")}
+                    onClick={() => onTemplateClick(template.label, template.initialContent)}
                     style={{ backgroundImage: `url(${template.imageUrl})` }}
                     className={cn(
                       'relative bg-cover bg-center bg-no-repeat size-full rounded-lg border border-gray-200',
